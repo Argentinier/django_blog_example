@@ -11,6 +11,14 @@ class TimestampsMixin(models.Model):
         abstract = True
 
 
+class PublishedPostManager(models.Manager):
+    """
+        A custom Manager for Post model that filters posts by status='published'
+    """
+    def get_queryset(self):
+        return super().get_queryset().filter(status=Post.PUBLISHED)
+
+
 class Post(TimestampsMixin):
 
     # It's good practice declaring inside the class you can access Post.DRAFT anywhere you have imported Post
@@ -26,6 +34,10 @@ class Post(TimestampsMixin):
         (DRAFT, 'Draft'),
         (PUBLISHED, 'Published')
     )
+
+    # Managers
+    objects = models.Manager()
+    published = PublishedPostManager()
 
     title = models.CharField(max_length=250)
 
