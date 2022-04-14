@@ -3,6 +3,7 @@ from django.db import models
 from django.template.defaultfilters import truncatewords
 from django.urls import reverse
 from django.utils import timezone
+from taggit.managers import TaggableManager
 
 
 class TimestampsMixin(models.Model):
@@ -40,6 +41,7 @@ class Post(TimestampsMixin):
     # Managers
     objects = models.Manager()
     published = PublishedPostManager()
+    tags = TaggableManager()
 
     title = models.CharField(max_length=250)
 

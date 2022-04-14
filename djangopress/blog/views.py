@@ -4,6 +4,7 @@ from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
 from django.views.generic import ListView
+from taggit.models import Tag
 
 from .forms import EmailPostForm, CommentForm
 from .models import Post
@@ -45,8 +46,14 @@ def post_share(request, post_id):
     )
 
 
-def post_list(request):
+def post_list(request, tag_slug=None):
     object_list = Post.published.all()
+    tag = None
+
+    if tag_slug:
+        tag = get_object_or_404(Tag, slug=tag_slug)
+        object_list = Post.published.filter(tags__in=[tag])
+
     paginator = Paginator(object_list=object_list, per_page=3)
     page = request.GET.get('page')
 
@@ -65,7 +72,8 @@ def post_list(request):
         template_name='blog/post/list.html',
         context={
             'page': page,
-            'posts': posts
+            'posts': posts,
+            'tag': tag
         }
     )
 
