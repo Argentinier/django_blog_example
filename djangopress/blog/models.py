@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.template.defaultfilters import truncatewords
 from django.urls import reverse
 from django.utils import timezone
 
@@ -66,3 +67,20 @@ class Post(TimestampsMixin):
                   self.publish.day,
                   self.slug]
         )
+
+
+class Comment(TimestampsMixin):
+    post = models.ForeignKey(to=Post, on_delete=models.CASCADE, related_name='comments')
+    body = models.CharField(max_length=160)
+    name = models.CharField(max_length=32)
+    active = models.BooleanField(default=True)
+
+    @property
+    def compact_body(self):
+        return truncatewords(self.body, 10)
+
+    class Meta:
+        ordering = ('created_at',)
+
+    def __str__(self):
+        return f'Comment by {self.name} on {self.post}'
