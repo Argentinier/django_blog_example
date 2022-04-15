@@ -10,6 +10,10 @@ class EmailPostForm(forms.Form):
     comments = forms.CharField(required=False, widget=forms.Textarea)
 
 
+class SearchForm(forms.Form):
+    query = forms.CharField(max_length=64)
+
+
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
